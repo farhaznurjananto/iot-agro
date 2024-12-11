@@ -3,18 +3,29 @@ import Navbar from "../components/navbar/Navbar";
 import Loading from "../components/loading/Loading";
 import { DropHalfBottom, Nut, Thermometer } from "@phosphor-icons/react";
 import Menu from "../components/menu/Menu";
-import { fetchData } from "../lib/handle";
+import { getSensorReadings, getActuators } from "../lib/handle";
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
 
 function Home() {
-  const [data, setData] = useState([]);
+  const [sensorData, setSensorData] = useState([]);
+  const [actuatorData, setActuatorData] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const formatTimestamp = (timestamp) => {
+    return format(new Date(timestamp), "dd MMMM yyyy HH:mm:ss", { locale: id });
+  };
+
+  const latestData = sensorData.length > 0 ? sensorData[sensorData.length - 1] : null;
 
   useEffect(() => {
     const getData = async () => {
       setLoading(true);
       try {
-        const data = await fetchData();
-        setData(data);
+        const dataSensor = await getSensorReadings();
+        const dataActuator = await getActuators();
+        setSensorData(dataSensor);
+        setActuatorData(dataActuator);
       } catch (error) {
         console.error(error);
       } finally {
@@ -37,7 +48,7 @@ function Home() {
 
           {/* stat */}
           <div className="my-3">
-            <div className="carousel w-full flex gap-3">
+            <div className="carousel w-full flex gap-3 md:justify-center">
               {/* <div id="item1" className="carousel-item overflow-hidden">
               <div className="bg-base-200 min-w-[312px] p-6 text-center min-h-60 flex flex-col items-center justify-center rounded-3xl relative">
                 <div className="z-10 flex flex-col h-full justify-between">
@@ -60,10 +71,10 @@ function Home() {
                   <div className="z-10 flex flex-col h-full justify-between">
                     <div>
                       <div className="font-medium text-2xl">Suhu</div>
-                      <div className="text-8xl font-bold">24℃</div>
+                      <div className="text-7xl font-bold">{latestData ? `${latestData.temperature}` : "--"}℃</div>
                       <div className="text-base">Suhu saat ini</div>
                     </div>
-                    <a className="link text-sm" href="">
+                    <a className="link text-sm" href="/suhu">
                       Lihat lebih detail
                     </a>
                   </div>
@@ -94,10 +105,10 @@ function Home() {
                   <div className="z-10 flex flex-col h-full justify-between">
                     <div>
                       <div className="font-medium text-2xl">Kelembaban</div>
-                      <div className="text-8xl font-bold">30%</div>
+                      <div className="text-8xl font-bold">{latestData ? `${latestData.humidity}` : "--"}%</div>
                       <div className="text-base">Kelembaban saat ini</div>
                     </div>
-                    <a className="link text-sm" href="">
+                    <a className="link text-sm" href="/kelembaban">
                       Lihat lebih detail
                     </a>
                   </div>
@@ -111,10 +122,10 @@ function Home() {
                   <div className="z-10 flex flex-col h-full justify-between">
                     <div>
                       <div className="font-medium text-2xl">Aktuator</div>
-                      <div className="text-8xl font-bold">1</div>
+                      <div className="text-8xl font-bold">{actuatorData.length}</div>
                       <div className="text-base">Aktuator</div>
                     </div>
-                    <a className="link text-sm" href="">
+                    <a className="link text-sm" href="/aktuator">
                       Lihat lebih detail
                     </a>
                   </div>
@@ -149,7 +160,7 @@ function Home() {
           </div>
 
           {/* table */}
-          <div className="my-3 flex flex-col gap-2">
+          <div className="my-3 flex flex-col gap-2 md:w-1/2 mx-auto">
             <p className="font-medium text-xl">Riwayat Terbaru</p>
             <div className="overflow-x-auto">
               {/* <table className="table table-xs table-pin-rows table-pin-cols">
@@ -196,30 +207,17 @@ function Home() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th>1</th>
-                    <th>11.21</th>
-                    <td>80℃</td>
-                    <td>3%</td>
-                  </tr>
-                  <tr>
-                    <th>1</th>
-                    <th>11.21</th>
-                    <td>80℃</td>
-                    <td>3%</td>
-                  </tr>
-                  <tr>
-                    <th>1</th>
-                    <th>11.21</th>
-                    <td>80℃</td>
-                    <td>3%</td>
-                  </tr>
+                  {sensorData.slice(0, 3).map((item, index) => (
+                    <tr key={item.id}>
+                      <th>{index + 1}</th>
+                      <th>{formatTimestamp(item.timestamp)}</th>
+                      <td>{item.temperature}℃</td>
+                      <td>{item.humidity}%</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
-            <a className="link text-sm text-right" href="">
-              Lihat lebih detail
-            </a>
           </div>
         </main>
       )}

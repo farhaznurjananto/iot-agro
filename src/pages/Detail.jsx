@@ -4,23 +4,31 @@ import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement } from "chart.js";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { fetchData } from "../lib/handle";
 import Loading from "../components/loading/Loading";
+import { getSensorReadings, getActuators, postActuators } from "../lib/handle";
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
 
-// Register Chart.js components
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
 function Detail() {
   const location = useLocation();
-  const [data, setData] = useState([]);
+  const [sensorData, setSensorData] = useState([]);
+  const [actuatorData, setActuatorData] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const formatTimestamp = (timestamp) => {
+    return format(new Date(timestamp), "dd MMMM yyyy HH:mm:ss", { locale: id });
+  };
 
   useEffect(() => {
     const getData = async () => {
       setLoading(true);
       try {
-        const data = await fetchData();
-        setData(data);
+        const data = await getSensorReadings();
+        const dataActuator = await getActuators();
+        setSensorData(data);
+        setActuatorData(dataActuator);
       } catch (error) {
         console.error(error);
       } finally {
@@ -31,37 +39,45 @@ function Detail() {
     getData();
   }, []);
 
-  // const data = {
-  //   labels: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
-  //   datasets: [
-  //     {
-  //       label: "Dataset 1",
-  //       data: [860, 1140, 1060, 1060, 1070, 1110, 1330, 2210, 7830, 2478],
-  //       borderColor: "red",
-  //       fill: false,
-  //     },
-  //     {
-  //       label: "Dataset 2",
-  //       data: [1600, 1700, 1700, 1900, 2000, 2700, 4000, 5000, 6000, 7000],
-  //       borderColor: "green",
-  //       fill: false,
-  //     },
-  //     {
-  //       label: "Dataset 3",
-  //       data: [300, 700, 2000, 5000, 6000, 4000, 2000, 1000, 200, 100],
-  //       borderColor: "blue",
-  //       fill: false,
-  //     },
-  //   ],
-  // };
+  const handleStatusChange = async (id, checked) => {
+    const status = checked ? "ON" : "OFF";
+    const data = { status };
 
-  // const options = {
-  //   plugins: {
-  //     legend: {
-  //       display: true,
-  //     },
-  //   },
-  // };
+    try {
+      await postActuators(id, data);
+      console.log(`Status actuator dengan ID ${id} berhasil diperbarui menjadi ${status}`);
+    } catch (error) {
+      console.error("Gagal memperbarui status actuator:", error.message);
+    }
+  };
+
+  const recentSensorData = sensorData.slice(-5);
+
+  const chartData = {
+    labels: recentSensorData.map((item) => formatTimestamp(item.timestamp)),
+    datasets: [
+      {
+        label: "Suhu",
+        data: location.pathname === "/suhu" ? recentSensorData.map((item) => item.temperature) : [],
+        borderColor: "red",
+        fill: false,
+      },
+      {
+        label: "Kelembaban",
+        data: location.pathname === "/kelembaban" ? recentSensorData.map((item) => item.humidity) : [],
+        borderColor: "green",
+        fill: false,
+      },
+    ],
+  };
+
+  const options = {
+    plugins: {
+      legend: {
+        display: true,
+      },
+    },
+  };
 
   return (
     <div className="min-h-screen flex flex-col justify-between">
@@ -84,7 +100,7 @@ function Detail() {
             <>
               <div className="my-6 md:max-w-screen-sm mx-auto">
                 <p className="font-medium text-xl">Grafik Data</p>
-                {/* <Line data={data} options={options} /> */}
+                <Line data={chartData} options={options} />
               </div>
 
               <div className="my-3 flex flex-col gap-2 md:max-w-screen-sm mx-auto">
@@ -133,21 +149,13 @@ function Detail() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <th>1</th>
-                        <th>11.21</th>
-                        <td>80℃</td>
-                      </tr>
-                      <tr>
-                        <th>1</th>
-                        <th>11.21</th>
-                        <td>80℃</td>
-                      </tr>
-                      <tr>
-                        <th>1</th>
-                        <th>11.21</th>
-                        <td>80℃</td>
-                      </tr>
+                      {sensorData.map((item, index) => (
+                        <tr key={item.id}>
+                          <th>{index + 1}</th>
+                          <th>{formatTimestamp(item.timestamp)}</th>
+                          <td>{item.temperature}℃</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -158,7 +166,7 @@ function Detail() {
             <>
               <div className="my-6 md:max-w-screen-sm mx-auto">
                 <p className="font-medium text-xl">Grafik Data</p>
-                {/* <Line data={data} options={options} /> */}
+                <Line data={chartData} options={options} />
               </div>
 
               <div className="my-3 flex flex-col gap-2 md:max-w-screen-sm mx-auto">
@@ -207,45 +215,41 @@ function Detail() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <th>1</th>
-                        <th>11.21</th>
-                        <td>8%</td>
-                      </tr>
-                      <tr>
-                        <th>1</th>
-                        <th>11.21</th>
-                        <td>8%</td>
-                      </tr>
-                      <tr>
-                        <th>1</th>
-                        <th>11.21</th>
-                        <td>8%</td>
-                      </tr>
+                      {sensorData.map((item, index) => (
+                        <tr key={item.id}>
+                          <th>{index + 1}</th>
+                          <th>{formatTimestamp(item.timestamp)}</th>
+                          <td>{item.humidity}%</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
               </div>
             </>
           )}
-          {location.pathname == "/aktuator" && (
-            <>
-              <div className="card my-3 bg-base-100 image-full w-full shadow-xl md:max-w-80 mx-auto">
+          {location.pathname == "/aktuator" &&
+            actuatorData.map((item, index) => (
+              <div key={index} className="card my-3 bg-base-100 image-full w-full shadow-xl md:max-w-80 mx-auto">
                 <figure>
                   <img src="https://ksj.co.id/wp-content/uploads/2023/06/Fungsi-Aktuator-dan-Jenisnya.webp" alt="aktuator" />
                 </figure>
                 <div className="card-body">
-                  <h2 className="card-title font-bold">Pompa Air</h2>
+                  <h2 className="card-title font-bold">{item.name}</h2>
                   <p>
-                    Terakhir Beroprasi: <span className="font-medium">11.14</span>
+                    Terakhir Beroprasi: <span className="font-medium">{formatTimestamp(item.timestamp)}</span>
                   </p>
                   <div className="card-actions justify-end">
-                    <input type="checkbox" className="toggle toggle-success" defaultChecked />
+                    <input
+                      type="checkbox"
+                      className="toggle toggle-success"
+                      onChange={(e) => handleStatusChange(item.id, e.target.checked)} // Mengirim id dan status ke handleStatusChange
+                      defaultChecked={item.status === "ON"}
+                    />
                   </div>
                 </div>
               </div>
-            </>
-          )}
+            ))}
         </main>
       )}
       <Menu />
