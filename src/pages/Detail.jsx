@@ -57,14 +57,14 @@ function Detail() {
     labels: recentSensorData.map((item) => formatTimestamp(item.timestamp)),
     datasets: [
       {
-        label: "Suhu",
-        data: location.pathname === "/suhu" ? recentSensorData.map((item) => item.temperature) : [],
+        label: "ldr",
+        data: location.pathname === "/ldr" ? recentSensorData.map((item) => item.ldr) : [],
         borderColor: "red",
         fill: false,
       },
       {
-        label: "Kelembaban",
-        data: location.pathname === "/kelembaban" ? recentSensorData.map((item) => item.humidity) : [],
+        label: "ir",
+        data: location.pathname === "/ir" ? recentSensorData.map((item) => item.ir) : [],
         borderColor: "green",
         fill: false,
       },
@@ -87,16 +87,16 @@ function Detail() {
       ) : (
         <main className="px-6 pt-3 pb-6">
           {" "}
-          {location.pathname === "/suhu" ? (
-            <p className="text-center text-2xl font-medium">Suhu</p>
-          ) : location.pathname === "/kelembaban" ? (
-            <p className="text-center text-2xl font-medium">Kelembaban</p>
+          {location.pathname === "/ldr" ? (
+            <p className="text-center text-2xl font-medium">ldr</p>
+          ) : location.pathname === "/ir" ? (
+            <p className="text-center text-2xl font-medium">ir</p>
           ) : location.pathname === "/aktuator" ? (
             <p className="text-center text-2xl font-medium">Aktuator</p>
           ) : (
             <p>Path tidak dikenal</p>
           )}
-          {location.pathname == "/suhu" && (
+          {location.pathname == "/ldr" && (
             <>
               <div className="my-6 md:max-w-screen-sm mx-auto">
                 <p className="font-medium text-xl">Grafik Data</p>
@@ -112,7 +112,7 @@ function Detail() {
                   <th>No</th>
                   <td>Tanggal</td>
                   <td>Timer</td>
-                  <td>Suhu</td>
+                  <td>ldr</td>
                   <td>Berat</td>
                 </tr>
               </thead>
@@ -121,21 +121,21 @@ function Detail() {
                   <th>1</th>
                   <th>1 Des 2024</th>
                   <td>8 minute</td>
-                  <td>80℃</td>
+                  <td>80</td>
                   <td>1 Kg</td>
                 </tr>
                 <tr>
                   <th>2</th>
                   <th>2 Des 2024</th>
                   <td>8 minute</td>
-                  <td>80℃</td>
+                  <td>80</td>
                   <td>1 Kg</td>
                 </tr>
                 <tr>
                   <th>3</th>
                   <th>3 Des 2024</th>
                   <td>8 minute</td>
-                  <td>80℃</td>
+                  <td>80</td>
                   <td>1 Kg</td>
                 </tr>
               </tbody>
@@ -145,7 +145,7 @@ function Detail() {
                       <tr>
                         <th>No</th>
                         <td>Waktu</td>
-                        <td>Suhu</td>
+                        <td>ldr</td>
                       </tr>
                     </thead>
                     <tbody>
@@ -153,7 +153,7 @@ function Detail() {
                         <tr key={item.id}>
                           <th>{index + 1}</th>
                           <th>{formatTimestamp(item.timestamp)}</th>
-                          <td>{item.temperature}℃</td>
+                          <td>{item.ldr}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -162,7 +162,7 @@ function Detail() {
               </div>
             </>
           )}
-          {location.pathname == "/kelembaban" && (
+          {location.pathname == "/ir" && (
             <>
               <div className="my-6 md:max-w-screen-sm mx-auto">
                 <p className="font-medium text-xl">Grafik Data</p>
@@ -178,7 +178,7 @@ function Detail() {
                   <th>No</th>
                   <td>Tanggal</td>
                   <td>Timer</td>
-                  <td>Suhu</td>
+                  <td>ldr</td>
                   <td>Berat</td>
                 </tr>
               </thead>
@@ -187,21 +187,21 @@ function Detail() {
                   <th>1</th>
                   <th>1 Des 2024</th>
                   <td>8 minute</td>
-                  <td>80℃</td>
+                  <td>80</td>
                   <td>1 Kg</td>
                 </tr>
                 <tr>
                   <th>2</th>
                   <th>2 Des 2024</th>
                   <td>8 minute</td>
-                  <td>80℃</td>
+                  <td>80</td>
                   <td>1 Kg</td>
                 </tr>
                 <tr>
                   <th>3</th>
                   <th>3 Des 2024</th>
                   <td>8 minute</td>
-                  <td>80℃</td>
+                  <td>80</td>
                   <td>1 Kg</td>
                 </tr>
               </tbody>
@@ -211,7 +211,7 @@ function Detail() {
                       <tr>
                         <th>No</th>
                         <td>Waktu</td>
-                        <td>Kelembaban</td>
+                        <td>ir</td>
                       </tr>
                     </thead>
                     <tbody>
@@ -219,7 +219,7 @@ function Detail() {
                         <tr key={item.id}>
                           <th>{index + 1}</th>
                           <th>{formatTimestamp(item.timestamp)}</th>
-                          <td>{item.humidity}%</td>
+                          <td>{item.ir}%</td>
                         </tr>
                       ))}
                     </tbody>

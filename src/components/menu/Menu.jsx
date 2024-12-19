@@ -9,12 +9,12 @@ function Menu() {
         </a>
       </li>
       <li>
-        <a className="tooltip" href="/suhu" data-tip="Suhu">
+        <a className="tooltip" href="/ldr" data-tip="ldr">
         <Thermometer size={24} weight="fill" />
         </a>
       </li>
       <li>
-        <a className="tooltip" href="/kelembaban" data-tip="Kelembaban">
+        <a className="tooltip" href="/ir" data-tip="ir">
         <DropHalfBottom size={24} weight="fill" />
         </a>
       </li>

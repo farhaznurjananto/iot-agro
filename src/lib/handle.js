@@ -3,6 +3,7 @@ import axios from "axios";
 export const getSensorReadings = async () => {
   try {
     const response = await axios.get("https://0396flbb-3000.asse.devtunnels.ms/api/sensor_readings/");
+    console.log(response);
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -13,6 +14,7 @@ export const getSensorReadings = async () => {
 export const getActuators = async () => {
   try {
     const response = await axios.get("https://0396flbb-3000.asse.devtunnels.ms/api/sensor_readings/aktuator");
+    console.log(response);
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);

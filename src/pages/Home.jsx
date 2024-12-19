@@ -70,11 +70,11 @@ function Home() {
                 <div className="bg-base-200 min-w-[312px] p-6 text-center min-h-60 flex flex-col items-center justify-center rounded-3xl relative">
                   <div className="z-10 flex flex-col h-full justify-between">
                     <div>
-                      <div className="font-medium text-2xl">Suhu</div>
-                      <div className="text-7xl font-bold">{latestData ? `${latestData.temperature}` : "--"}℃</div>
-                      <div className="text-base">Suhu saat ini</div>
+                      <div className="font-medium text-2xl">ir</div>
+                      <div className="text-7xl font-bold">{latestData ? `${latestData.ldr}` : "--"}</div>
+                      <div className="text-base">ir saat ini</div>
                     </div>
-                    <a className="link text-sm" href="/suhu">
+                    <a className="link text-sm" href="/ir">
                       Lihat lebih detail
                     </a>
                   </div>
@@ -104,11 +104,11 @@ function Home() {
                 <div className="bg-base-200 min-w-[312px] p-6 text-center min-h-60 flex flex-col items-center justify-center rounded-3xl relative">
                   <div className="z-10 flex flex-col h-full justify-between">
                     <div>
-                      <div className="font-medium text-2xl">Kelembaban</div>
-                      <div className="text-8xl font-bold">{latestData ? `${latestData.humidity}` : "--"}%</div>
-                      <div className="text-base">Kelembaban saat ini</div>
+                      <div className="font-medium text-2xl">ldr</div>
+                      <div className="text-8xl font-bold">{latestData ? `${latestData.ir}` : "--"}</div>
+                      <div className="text-base">ldr saat ini</div>
                     </div>
-                    <a className="link text-sm" href="/kelembaban">
+                    <a className="link text-sm" href="/ldr">
                       Lihat lebih detail
                     </a>
                   </div>
@@ -169,7 +169,7 @@ function Home() {
                   <th>No</th>
                   <td>Tanggal</td>
                   <td>Timer</td>
-                  <td>Suhu</td>
+                  <td>ir</td>
                   <td>Berat</td>
                 </tr>
               </thead>
@@ -178,21 +178,21 @@ function Home() {
                   <th>1</th>
                   <th>1 Des 2024</th>
                   <td>8 minute</td>
-                  <td>80℃</td>
+                  <td>80</td>
                   <td>1 Kg</td>
                 </tr>
                 <tr>
                   <th>2</th>
                   <th>2 Des 2024</th>
                   <td>8 minute</td>
-                  <td>80℃</td>
+                  <td>80</td>
                   <td>1 Kg</td>
                 </tr>
                 <tr>
                   <th>3</th>
                   <th>3 Des 2024</th>
                   <td>8 minute</td>
-                  <td>80℃</td>
+                  <td>80</td>
                   <td>1 Kg</td>
                 </tr>
               </tbody>
@@ -202,8 +202,8 @@ function Home() {
                   <tr>
                     <th>No</th>
                     <td>Waktu</td>
-                    <td>Suhu</td>
-                    <td>Kelembaban</td>
+                    <td>ir</td>
+                    <td>ldr</td>
                   </tr>
                 </thead>
                 <tbody>
@@ -211,8 +211,8 @@ function Home() {
                     <tr key={item.id}>
                       <th>{index + 1}</th>
                       <th>{formatTimestamp(item.timestamp)}</th>
-                      <td>{item.temperature}℃</td>
-                      <td>{item.humidity}%</td>
+                      <td>{item.ldr}</td>
+                      <td>{item.ir}</td>
                     </tr>
                   ))}
                 </tbody>
